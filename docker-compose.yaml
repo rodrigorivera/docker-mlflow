@@ -22,6 +22,7 @@ services:
 
   mlflow:
     build: .
+   image: img_mlflow_${USERNAME}
     container_name: mlflow_${USERNAME}
     expose:
       - 8090
