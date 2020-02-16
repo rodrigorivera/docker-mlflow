@@ -3,34 +3,29 @@ Deploy mlflow with docker-compose
 
 # Deploy
 ## 1. Login Google Cloud Platform
-In this script, mlflow stores artifacts on Google Cloud Storage.  
-It means you must set up GCP Credentials.  
-If you already have `application_default_credentials.json`, go next chapter.  
-
-```sh
-$ gcloud auth application-default login
-```
-`application_default_credentials.json` will be saved `${HOME}/.config/gcloud/` 
+In this script, mlflow stores artifacts locally in the directory `home/`.  
 
 
 ## 2. Create .env file
-In `docker-composa.yaml`, some parameters is loaded from `.env` file.  
+In `docker-compose.yaml`, some parameters is loaded from `.env` file.  
 Set following parameters in `.env`.  
 
 - HOST: host name(If you don't use domain, any name is accepted. If use, speciy it)
 - POSTGRES_USER: postgresql db user
 - POSTGRES_PASSWORD: postgresql db user password
-- GCP_STORAGE_BUCKET: Google Cloud Storage bucket name mlflow will store artifact
-- CREDENTIALS_PATH: Path to `application_default_credentials.json`
-- GCLOUD_PROJECT: GCP Project name you use
+- POSTGRES_DB_NAME: The database to use, for example mlflow-db
+- LETSENCRYPT_EMAIL: The e-mail address to use for Let's encrypt
+- USERNAME: The username to identify the containers
+- VOLUME: Where to persists files in the host
 
 ```
-HOST=mlflow.dev
-POSTGRES_USER=demo-user
-POSTGRES_PASSWORD=demo-password
-GCP_STORAGE_BUCKET=demo-bucket
-CREDENTIALS_PATH=~/.config/gcloud/application_default_credentials.json
-GCLOUD_PROJECT=demo-project
+HOST=electra.skoltech.ru
+POSTGRES_USER=mlflow
+POSTGRES_PASSWORD=123M1F10W-P455W0rd456
+POSTGRES_DB_NAME=mlflow-db
+LETSENCRYPT_EMAIL=rodrigo.riveracastro@skoltech.ru
+USERNAME=riverar
+VOLUME=./
 ```
 
 ## 3. Set up NGINX Basic Authentication
@@ -43,7 +38,7 @@ $ sudo echo "{USER_NAME}:$(openssl passwd -apr1 {PASSWORD})" >> ${HOST}
 `${HOST}` is host name you set in chapter 2.  
 
 ## 4. Build and deploy
-Build mlflow Dockerfilw, and then deploy applications.  
+Build mlflow Dockerfile, and then deploy applications.  
 
 ```sh
 $ docker-compose build
