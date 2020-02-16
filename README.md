@@ -1,5 +1,5 @@
-# mlflow-docker-compose
-Deploy mlflow with docker-compose
+# docker-mlflow
+Deploy mlflow using docker-compose
 
 # Deploy
 ## 1. Login Google Cloud Platform
