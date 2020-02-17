@@ -22,20 +22,21 @@ services:
 
   mlflow:
     build: .
-   image: img_mlflow_${USERNAME}
+    image: img_mlflow_${USERNAME}
     container_name: mlflow_${USERNAME}
     expose:
-      - 8090
+      - 80
       - 443
     depends_on:
       - postgresql
       - waitfordb
     volumes:
-      - ${VOLUME}:/home
+      - ${ARTIFACTS}:/opt/mlflow/artifactStore
+      - ${SCRIPTS}:/opt/mlflow/scripts/
     environment:
       DB_URI: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgresql:5432/${POSTGRES_DB_NAME}
       VIRTUAL_HOST: ${HOST}
-      VIRTUAL_PORT: 8090
+      VIRTUAL_PORT: 80
       LETSENCRYPT_HOST: ${HOST}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
 
@@ -45,7 +46,7 @@ services:
     container_name: nginx-proxy_${USERNAME}
     restart: always
     ports:
-      - "8090:8090"
+      - "8090:80"
       - "443:443"
     volumes:
       - ./${HOST}:/etc/nginx/htpasswd/${HOST}
@@ -65,7 +66,7 @@ services:
 
   letsencrypt-nginx-proxy-companion:
     image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: nginx-proxy-lets-encrypt
+    container_name: nginx-proxy-lets-encrypt_${HOST}
     restart: always
     depends_on:
       - nginx-proxy

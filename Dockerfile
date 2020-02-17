@@ -1,8 +1,12 @@
 FROM conda/miniconda3:latest
 
-RUN mkdir -p /mlflow/mlruns
+ENV MLFLOW_HOME /opt/mlflow
+ENV ARTIFACT_STORE ${MLFLOW_HOME}/artifactStore
 
-WORKDIR /mlflow
+RUN mkdir -p ${MLFLOW_HOME}/scripts && \
+    mkdir -p ${ARTIFACT_STORE}
+
+WORKDIR ${MLFLOW_HOME}
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
